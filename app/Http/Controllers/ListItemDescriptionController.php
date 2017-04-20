@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Listitem;
+use App\Description;
 use Illuminate\Http\Request;
 
 class ListItemDescriptionController extends Controller
 {
     public function index($listitemId){
-        return Description::ofHamburger($listitemId)->paginate();
+        return Description::OfListitem($listitemId)->paginate();
     }
 
     public function show($listitemId,$descriptionId){
@@ -18,6 +19,9 @@ class ListItemDescriptionController extends Controller
     }
 
     public function store(Request $request, $listitemId){
+
+        // validate our input description
+        $this->validate($request, [  'description' => 'required' , 'author' => 'required', 'title' => 'required']);
 
         $listitem = Listitem::findOrFail($listitemId);
         $listitem->descriptions()->save(new Description([
